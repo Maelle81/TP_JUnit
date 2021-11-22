@@ -29,8 +29,15 @@ public class Voiture {
 	 */
 	public void entreAuGarage(Garage g) throws Exception {
 		// Et si la voiture est déjà dans un garage ?
-		Stationnement s = new Stationnement(this, g);
-		myStationnements.add(s);
+                //if(myStationnements.get(myStationnements.size()-1).estEnCours())throw new Exception ("La voiture est déjà stationnée !");
+		
+                //Stationnement s = new Stationnement(this, g);
+                //if(myStationnements.contains(s)) throw new Exception ("La voiture ne doit pas être au garage");
+		//myStationnements.add(s);
+                
+                if(this.estDansUnGarage()) throw new Exception ("La voiture ne doit pas être au garage");
+                Stationnement s = new Stationnement(this, g);
+                myStationnements.add(s);
 	}
 
 	/**
@@ -40,8 +47,12 @@ public class Voiture {
 	 * @throws java.lang.Exception si la voiture n'est pas dans un garage
 	 */
 	public void sortDuGarage() throws Exception {
-		throw new UnsupportedOperationException("Pas encore implémenté");
-		// TODO: Implémenter cette méthode
+            
+            	if(this.estDansUnGarage()==false) throw new UnsupportedOperationException("La voiture dit être dans le garage");
+		
+                Stationnement s = myStationnements.get(myStationnements.size()-1);
+                s.terminer();
+                // TODO: Implémenter cette méthode
 		// Trouver le dernier stationnement de la voiture
 		// Terminer ce stationnement
 	}
@@ -51,7 +62,11 @@ public class Voiture {
 	 */
 	public Set<Garage> garagesVisites() {
 		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
+                Set<Garage> g = new HashSet<Garage> ();
+                for( Stationnement s : myStationnements){
+                    g.add(s.getGarage());
+                }
+		return g;
 	}
 
 	/**
@@ -59,7 +74,15 @@ public class Voiture {
 	 */
 	public boolean estDansUnGarage() {
 		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
+                boolean t = false;
+                Iterator<Stationnement> it = myStationnements.iterator();
+                while(it.hasNext()){
+                    Stationnement s = it.next();
+                    if (s.estEnCours()){
+                        t=true;
+                    }
+                }
+		return t;
 		// Vrai si le dernier stationnement est en cours
 	}
 
@@ -79,7 +102,16 @@ public class Voiture {
 	 */
 	public void imprimeStationnements(PrintStream out) {
 		// TODO: Implémenter cette méthode
-		throw new UnsupportedOperationException("Pas encore implémenté");
+                String message = "";
+                for (Garage g: this.garagesVisites()){
+                    message += g.toString() + "\n";
+                    for(Stationnement s : myStationnements){
+                        if(s.getGarage() == g){
+                            message += s.toString() + "\n";
+                        }
+                    }
+                }
+		out.println(message);
 	}
 
 }
